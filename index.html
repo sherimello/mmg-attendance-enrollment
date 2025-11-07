@@ -79,6 +79,30 @@
     <!-- END: CSS for the loading screen -->
 </head>
 <body>
+<!-- START: HTML for the loading indicator -->
+<!-- 
+<script src="./flutter_bootstrap.js" async></script>
+
+<!-- START: JavaScript to hide the loader when Flutter is ready (BULLETPROOF VERSION) -->
+<script>
+    window.addEventListener('load', function(ev) {
+      _flutter.loader.loadEntrypoint({
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            // This runs the Flutter app and returns a promise that resolves when it's initialized.
+            appRunner.runApp().then(function(app) {
+              // This is the safest moment to remove the loader, after the app is running.
+              var loadingIndicator = document.getElementById("loading-indicator");
+              if (loadingIndicator) {
+                console.log("Flutter app is running, removing loading indicator immediately.");
+                loadingIndicator.remove();
+              }
+            });
+          });
+        }
+      });
+    });
+</script>
 <!-- END: JavaScript to hide the loader -->
 </body>
 </html>
