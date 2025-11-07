@@ -8,11 +8,14 @@ function getVideoElement() {
 
 // Loads all the required models from your web/models folder.
 async function loadModels() {
-    console.log("Attempting to load FaceAPI models...");
+    console.log("Attempting to load FaceAPI models from relative path...");
     try {
-        await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-        await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
-        await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+        // --- FIX: REMOVED the leading slash from the paths ---
+        await faceapi.nets.tinyFaceDetector.loadFromUri('models');
+        await faceapi.nets.faceLandmark68Net.loadFromUri('models');
+        await faceapi.nets.faceRecognitionNet.loadFromUri('models');
+        // ----------------------------------------------------
+
         console.log("✅ All models loaded successfully.");
         return true;
     } catch (error) {
@@ -52,14 +55,13 @@ function prepareDescriptors(enrolledFaces) {
 
     try {
         const labeledFaceDescriptors = enrolledFaces.map(face => {
-            // Ensure face.face_data is a flat array of numbers before creating Float32Array
             if (!face.face_data || !Array.isArray(face.face_data)) {
                  console.error("Invalid face_data for user:", face.name);
                  return null;
             }
             const descriptor = new Float32Array(face.face_data);
             return new faceapi.LabeledFaceDescriptors(face.name, [descriptor]);
-        }).filter(ld => ld !== null); // Filter out any nulls from invalid data
+        }).filter(ld => ld !== null);
 
         if (labeledFaceDescriptors.length === 0) {
             console.error("No valid labeled descriptors could be created.");
