@@ -1,52 +1,85 @@
+<!-- START: JavaScript to hide the loader when Flutter is ready (ROBUST VERSION 2.0) -->
+<script>
+    window.addEventListener('load', function(ev) {
+      // Get a reference to the loader element.
+      var loadingIndicator = document.getElementById("loading-indicator");
+
+      _flutter.loader.loadEntrypoint({
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            // The try/finally block is still good practice.
+            try {
+              return appRunner.runApp();
+            } finally {
+              // This is the guaranteed execution block.
+              if (loadingIndicator) {
+                console.log("Flutter is ready, hiding loading indicator...");
+
+                // 1. Start the fade-out animation for a smooth visual transition.
+                loadingIndicator.classList.add('fade-out');
+                
+                // 2. Immediately prevent it from capturing clicks or interfering.
+                loadingIndicator.style.pointerEvents = 'none';
+
+                // 3. After the animation, forcefully hide it and then remove it.
+                // This is the key change. We use display: 'none' as a final hammer.
+                setTimeout(function() {
+                  loadingIndicator.style.display = 'none'; // Force hide
+                  loadingIndicator.remove(); // Then clean up the DOM
+                }, 500); // This must match your CSS animation duration.
+              }
+            }
+          });
+        }
+      });
+    });
+</script>
+<!-- END: JavaScript to hide the loader -->```
+
+### Why This Works
+
+1.  **Guaranteed Execution:** The `finally` block ensures this code runs no matter what.
+2.  **Immediate UI Unblocking:** `pointerEvents = 'none'` instantly stops the loader from interfering with your Flutter UI, even while it's still visible and fading out.
+3.  **The "Hammer": `display = 'none'`**: This is the most important change. After 500 milliseconds (the duration of your fade animation), this command tells the browser to completely stop rendering the element. It's a much more powerful and immediate instruction than just relying on the animation to finish. Even if the animation stutters, this will hide the element.
+4.  **`remove()`:** Finally, we clean up the DOM by removing the element entirely.
+
+---
+
+### Complete `web/index.html` with the Final Fix
+
+Here is the full, corrected file for you to copy and paste.
+
+```html
 <!DOCTYPE html>
 <html>
 <head>
-    <!--
-      If you are serving your web app in a path other than the root, change the
-      href value below to reflect the base path you are serving from.
-
-      The path provided below has to start and end with a slash "/" in order for
-      it to work correctly.
-
-      For more details:
-      * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-      This is a placeholder for base href that will be replaced by the value of
-      the `--base-href` argument provided to `flutter build`.
-    -->
     <base href="./">
 
     <meta charset="UTF-8">
     <meta content="IE-Edge" http-equiv="X-UA-Compatible">
     <meta name="description" content="Official IGM for MMG SHIPPING LINES LTD.">
 
-    <!-- iOS meta tags & icons -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="igm">
     <link rel="apple-touch-icon" href="./icons/Icon-192.png">
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="./favicon.png"/>
 
     <title>igm</title>
     <link rel="manifest" href="./manifest.json">
 
-    <!-- Your existing scripts -->
     <script src="./js/camera_logic.js" defer></script>
     <script src="./js/face-api.js" defer></script>
     <script src="./js/face-api-helper.js" defer></script>
     <script src="./js/face_worker.js" defer></script>
 
-    <!-- START: CSS for the loading screen -->
     <style>
         body {
-          /* Set background to pure black and remove default margin */
           background-color: #000000;
           margin: 0;
         }
 
-        /* Use fixed positioning for a robust, centered overlay */
         #loading-indicator {
           position: fixed;
           top: 0;
@@ -59,21 +92,19 @@
           align-items: center;
           color: #FFFFFF;
           font-family: Arial, sans-serif;
-          z-index: 9999; /* Ensures it stays on top */
+          z-index: 9999;
         }
 
-        /* Style for the moth image */
         #loading-indicator img {
           width: 30vmin;
           height: 30vmin;
-          object-fit: contain; /* Fit whole image inside the square */
+          object-fit: contain;
           margin-bottom: 25px;
         }
 
-        /* A simple CSS spinner */
         .spinner {
-          border: 8px solid #ffffff; /* White track */
-          border-top: 8px solid #014939; /* Dark green arc */
+          border: 8px solid #ffffff;
+          border-top: 8px solid #014939;
           border-radius: 50%;
           width: 60px;
           height: 60px;
@@ -96,7 +127,6 @@
           100% { -webkit-transform: rotate(360deg); }
         }
 
-        /* Animation to smoothly fade out the loader */
         .fade-out {
           animation: fadeOut 0.5s forwards;
         }
@@ -106,49 +136,45 @@
           to { opacity: 0; }
         }
     </style>
-    <!-- END: CSS for the loading screen -->
 </head>
 <body>
-<!-- START: HTML for the loading indicator -->
 <div id="loading-indicator">
     <img src="./moth.jpeg" alt="Loading Moth">
-    <!-- You can re-enable the spinner and text if you want them -->
+    <!-- You had these commented out, which is fine -->
     <!-- <div class="spinner"></div> -->
     <!-- <p>Initializing Moth Engine...</p> -->
 </div>
-<!-- END: HTML for the loading indicator -->
 
 <script src="./flutter_bootstrap.js" async></script>
 
-<!-- START: JavaScript to hide the loader when Flutter is ready (ROBUST VERSION) -->
+<!-- START: JavaScript to hide the loader when Flutter is ready (ROBUST VERSION 2.0) -->
 <script>
     window.addEventListener('load', function(ev) {
-      // Get a reference to the loader element immediately.
+      // Get a reference to the loader element.
       var loadingIndicator = document.getElementById("loading-indicator");
 
       _flutter.loader.loadEntrypoint({
         onEntrypointLoaded: function(engineInitializer) {
           engineInitializer.initializeEngine().then(function(appRunner) {
-            // Use a try...finally block for guaranteed execution.
+            // Use a try/finally block for guaranteed execution.
             try {
-              // This is an asynchronous call, but we don't need to await it
-              // for the finally block to be scheduled.
               return appRunner.runApp();
             } finally {
-              // This block will run ALWAYS after runApp() is called,
-              // ensuring the loader is removed even if the app has an error.
+              // This block will run ALWAYS after runApp() is called.
               if (loadingIndicator) {
-                // Add the fade-out class for the animation.
-                loadingIndicator.classList.add('fade-out');
+                console.log("Flutter is ready, hiding loading indicator...");
 
-                // Also, immediately disable pointer events to prevent it
-                // from blocking clicks on the UI that might appear underneath.
+                // 1. Start the fade-out animation.
+                loadingIndicator.classList.add('fade-out');
+                
+                // 2. Immediately prevent it from capturing clicks.
                 loadingIndicator.style.pointerEvents = 'none';
 
-                // After the animation completes, remove the element entirely.
+                // 3. After the animation, forcefully hide it and then remove it.
                 setTimeout(function() {
-                  loadingIndicator.remove();
-                }, 500); // This duration should match the fadeOut animation time.
+                  loadingIndicator.style.display = 'none'; // Force hide
+                  loadingIndicator.remove(); // Clean up the DOM
+                }, 500); // This must match your CSS animation duration.
               }
             }
           });
