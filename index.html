@@ -112,27 +112,45 @@
 <!-- START: HTML for the loading indicator -->
 <div id="loading-indicator">
     <img src="./moth.jpeg" alt="Loading Moth">
-<!--    <div class="spinner"></div>-->
-<!--    <p>Initializing Moth Engine...</p>-->
+    <!-- You can re-enable the spinner and text if you want them -->
+    <!-- <div class="spinner"></div> -->
+    <!-- <p>Initializing Moth Engine...</p> -->
 </div>
 <!-- END: HTML for the loading indicator -->
 
 <script src="./flutter_bootstrap.js" async></script>
 
-<!-- START: JavaScript to hide the loader when Flutter is ready -->
+<!-- START: JavaScript to hide the loader when Flutter is ready (ROBUST VERSION) -->
 <script>
     window.addEventListener('load', function(ev) {
+      // Get a reference to the loader element immediately.
+      var loadingIndicator = document.getElementById("loading-indicator");
+
       _flutter.loader.loadEntrypoint({
         onEntrypointLoaded: function(engineInitializer) {
           engineInitializer.initializeEngine().then(function(appRunner) {
-            var loadingIndicator = document.getElementById("loading-indicator");
-            if (loadingIndicator) {
-              loadingIndicator.classList.add('fade-out');
-              setTimeout(function() {
-                loadingIndicator.remove();
-              }, 500);
+            // Use a try...finally block for guaranteed execution.
+            try {
+              // This is an asynchronous call, but we don't need to await it
+              // for the finally block to be scheduled.
+              return appRunner.runApp();
+            } finally {
+              // This block will run ALWAYS after runApp() is called,
+              // ensuring the loader is removed even if the app has an error.
+              if (loadingIndicator) {
+                // Add the fade-out class for the animation.
+                loadingIndicator.classList.add('fade-out');
+
+                // Also, immediately disable pointer events to prevent it
+                // from blocking clicks on the UI that might appear underneath.
+                loadingIndicator.style.pointerEvents = 'none';
+
+                // After the animation completes, remove the element entirely.
+                setTimeout(function() {
+                  loadingIndicator.remove();
+                }, 500); // This duration should match the fadeOut animation time.
+              }
             }
-            appRunner.runApp();
           });
         }
       });
