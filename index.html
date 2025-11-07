@@ -1,108 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!--
+      If you are serving your web app in a path other than the root, change the
+      href value below to reflect the base path you are serving from.
+
+      The path provided below has to start and end with a slash "/" in order for
+      it to work correctly.
+
+      For more details:
+      * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+      This is a placeholder for base href that will be replaced by the value of
+      the `--base-href` argument provided to `flutter build`.
+    -->
     <base href="./">
 
     <meta charset="UTF-8">
     <meta content="IE-Edge" http-equiv="X-UA-Compatible">
     <meta name="description" content="Official IGM for MMG SHIPPING LINES LTD.">
 
+    <!-- iOS meta tags & icons -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="igm">
     <link rel="apple-touch-icon" href="./icons/Icon-192.png">
 
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="./favicon.png"/>
 
     <title>igm</title>
     <link rel="manifest" href="./manifest.json">
 
+    <!-- Your existing scripts -->
     <script src="./js/camera_logic.js" defer></script>
     <script src="./js/face-api.js" defer></script>
     <script src="./js/face-api-helper.js" defer></script>
     <script src="./js/face_worker.js" defer></script>
 
-    <!-- START: CSS for the loading screen -->
-    <style>
-        body {
-          background-color: #000000;
-          margin: 0;
-        }
-
-        #loading-indicator {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          color: #FFFFFF;
-          font-family: Arial, sans-serif;
-          z-index: 9999;
-        }
-
-        #loading-indicator img {
-          width: 30vmin;
-          height: 30vmin;
-          object-fit: contain;
-          margin-bottom: 25px;
-        }
-
-        .spinner {
-          border: 8px solid #ffffff;
-          border-top: 8px solid #014939;
-          border-radius: 50%;
-          width: 60px;
-          height: 60px;
-          animation: spin 1.5s linear infinite;
-          -webkit-animation: spin 1.5s linear infinite;
-        }
-
-        #loading-indicator p {
-          margin-top: 20px;
-          font-size: 16px;
-          letter-spacing: 1px;
-        }
-
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @-webkit-keyframes spin {
-          0% { -webkit-transform: rotate(0deg); }
-          100% { -webkit-transform: rotate(360deg); }
-        }
-    </style>
-    <!-- END: CSS for the loading screen -->
+    <!--
+      All custom CSS for the loading indicator has been removed from here.
+    -->
 </head>
 <body>
-<!-- START: HTML for the loading indicator -->
-<!-- 
-<script src="./flutter_bootstrap.js" async></script>
+  <!-- 
+    The custom HTML for the loading indicator has been removed from here.
+  -->
 
-<!-- START: JavaScript to hide the loader when Flutter is ready (BULLETPROOF VERSION) -->
-<script>
+  <script src="./flutter_bootstrap.js" async></script>
+
+  <!-- 
+    This is the default Flutter script. It initializes and runs the app
+    without manipulating any loading indicators. 
+  -->
+  <script>
     window.addEventListener('load', function(ev) {
       _flutter.loader.loadEntrypoint({
         onEntrypointLoaded: function(engineInitializer) {
           engineInitializer.initializeEngine().then(function(appRunner) {
-            // This runs the Flutter app and returns a promise that resolves when it's initialized.
-            appRunner.runApp().then(function(app) {
-              // This is the safest moment to remove the loader, after the app is running.
-              var loadingIndicator = document.getElementById("loading-indicator");
-              if (loadingIndicator) {
-                console.log("Flutter app is running, removing loading indicator immediately.");
-                loadingIndicator.remove();
-              }
-            });
+            appRunner.runApp();
           });
         }
       });
     });
-</script>
-<!-- END: JavaScript to hide the loader -->
+  </script>
 </body>
 </html>
